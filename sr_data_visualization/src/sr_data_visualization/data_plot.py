@@ -129,6 +129,12 @@ class GenericDataPlot(QwtPlot):
             else:
                 trace.plot.detach()
 
+    def clear_data(self):
+        for trace in self.traces:
+                trace.data = np.zeros(self.x_data.shape)
+                trace.plot.setData(self.x_data, trace.data)
+        self.replot()
+
 
 class JointStatesDataPlot(GenericDataPlot):
     def __init__(self, joint_name, topic_name, topic_type):
@@ -205,11 +211,11 @@ class ControlLoopsDataPlot(GenericDataPlot):
         if self._subscriber is not None:
             self._subscriber.unregister()
             self.timer.stop()
-            print(self._topic_name)
+
+            self.clear_data()
 
             self._topic_name = self._topic_name[0:4] + side + self._topic_name[6:]
 
-            print("subscribing to: " + self._topic_name)
             self._subscriber = rospy.Subscriber(self._topic_name, self._topic_type,
                                                 self.callback, queue_size=1)
             if self.timer is None:
