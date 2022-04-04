@@ -51,6 +51,10 @@ class DataBuffer():
         self.data = np.concatenate((self.data[:1], self.data[:-1]))
         self.data[0] = self.latest_value
 
+    def clear(self):
+        self.latest_value = 0.0
+        self.data = np.zeros(self.buf_size)
+
 
 class GenericDataPlot(QwtPlot):
     GRAPH_MINW = 150
@@ -106,6 +110,7 @@ class GenericDataPlot(QwtPlot):
         self.replot()
 
     def plot_data(self, plot):
+        self.clear_data()
         if plot:
             self._subscriber = rospy.Subscriber(self._topic_name, self._topic_type,
                                                 self.callback, queue_size=1)
@@ -132,6 +137,7 @@ class GenericDataPlot(QwtPlot):
     def clear_data(self):
         for trace in self.traces:
                 trace.data = np.zeros(self.x_data.shape)
+                trace.latest_value = 0.0
                 trace.plot.setData(self.x_data, trace.data)
         self.replot()
 
@@ -188,6 +194,19 @@ class JointStatesDataPlot(GenericDataPlot):
 
         self.replot()
 
+    def clear_data(self):
+        # Clear graphs
+        for trace in self.traces:
+                trace.data = np.zeros(self.x_data.shape)
+                trace.latest_value = 0.0
+                trace.plot.setData(self.x_data, trace.data)
+        self.replot()
+
+        # Clear buffers
+        for buf in range(len(self.buffers_left)):
+            self.buffers_left[buf].clear()
+            self.buffers_right[buf].clear()
+
 
 class ControlLoopsDataPlot(GenericDataPlot):
     def __init__(self, joint_name, topic_name, topic_type):
@@ -228,6 +247,9 @@ class MotorStatsGenericDataPlot(GenericDataPlot):
     def __init__(self, joint_name, topic_name, topic_type):
         super().__init__(joint_name, topic_name, topic_type)
 
+        self.side = 'lh'
+        self.joint_name = self.side + self.joint_name[2:]
+
     def callback(self, data):
         for message in data.status:
             # Splits the name into parts e.g.
@@ -246,6 +268,11 @@ class MotorStatsGenericDataPlot(GenericDataPlot):
                             for trace in range(len(self.traces)):
                                 if item.key == self.traces[trace].name:
                                     self.traces[trace].latest_value = item.value
+
+    def change_side(self, side):
+        self.side = side
+        self.joint_name = self.side + self.joint_name[2:]
+        self.clear_data()
 
 
 class MotorStats1DataPlot(MotorStatsGenericDataPlot):

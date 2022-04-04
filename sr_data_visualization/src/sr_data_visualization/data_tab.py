@@ -95,6 +95,7 @@ class GenericDataTab(QWidget):
 
         for child in self.findChildren(JointGraph):
             child.joint_plot.change_side(side)
+            child.change_side(side)
 
     def radio_button_selected(self, radio_button):
         for child in self.findChildren(JointGraph):
