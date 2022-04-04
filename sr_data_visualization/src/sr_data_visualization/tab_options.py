@@ -216,6 +216,13 @@ class PalmExtrasAcellTabOptions(GenericTabOptions):
 
         self.all_accel_button.setChecked(True)
 
+        self.hand_id_selection_layout = QFormLayout()
+        self.hand_id_selection = QComboBox()
+        self.hand_labels = ['lh', 'rh']
+        self.hand_id_selection.addItems(self.hand_labels)
+        self.hand_id_selection_layout.addRow(QLabel("Hand ID:"), self.hand_id_selection)
+        self.check_layout.addWidget(self.hand_id_selection)
+
 
 class PalmExtrasGyroTabOptions(GenericTabOptions):
     def __init__(self, tab_name, parent=None):
@@ -239,6 +246,13 @@ class PalmExtrasGyroTabOptions(GenericTabOptions):
         self.check_layout.addWidget(self.all_gyro_button)
 
         self.all_gyro_button.setChecked(True)
+
+        self.hand_id_selection_layout = QFormLayout()
+        self.hand_id_selection = QComboBox()
+        self.hand_labels = ['lh', 'rh']
+        self.hand_id_selection.addItems(self.hand_labels)
+        self.hand_id_selection_layout.addRow(QLabel("Hand ID:"), self.hand_id_selection)
+        self.check_layout.addWidget(self.hand_id_selection)
 
 
 class PalmExtrasADCTabOptions(GenericTabOptions):
@@ -267,3 +281,10 @@ class PalmExtrasADCTabOptions(GenericTabOptions):
         self.check_layout.addWidget(self.all_adc_button)
 
         self.all_adc_button.setChecked(True)
+
+        self.hand_id_selection_layout = QFormLayout()
+        self.hand_id_selection = QComboBox()
+        self.hand_labels = ['lh', 'rh']
+        self.hand_id_selection.addItems(self.hand_labels)
+        self.hand_id_selection_layout.addRow(QLabel("Hand ID:"), self.hand_id_selection)
+        self.check_layout.addWidget(self.hand_id_selection)
